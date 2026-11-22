@@ -1,0 +1,358 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TOO MUCH PHONES</title>
+
+    <style>
+        body {
+            background-color: #101010;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 25px;
+            border-bottom: 2px solid gold;
+        }
+
+        h1 {
+            color: gold;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .products {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background-color: #202020;
+            border: 1px solid gold;
+            border-radius: 12px;
+            padding: 20px;
+            width: 220px;
+            text-align: center;
+        }
+
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+        }
+
+        .price {
+            color: gold;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        button {
+            background-color: #00c99a;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #009f79;
+        }
+
+        .cart {
+            background-color: #202020;
+            border: 1px solid gold;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 35px auto;
+            max-width: 600px;
+        }
+
+        #total {
+            color: gold;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 95%;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            border: 1px solid gold;
+            border-radius: 6px;
+            background-color: #101010;
+            color: white;
+        }
+
+        label {
+            color: gold;
+        }
+
+        footer {
+            text-align: center;
+            color: gold;
+            padding: 25px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .card {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>TOO MUCH PHONES</h1>
+        <p>Welcome to our phone shop in Ghana!</p>
+        <p>Your trusted phone store.</p>
+    </header>
+
+    <h2>Our Products</h2>
+
+    <div class="products">
+
+        <div class="card">
+            <img src="phone 14pm.jpg" alt="iPhone 14 Pro Max">
+            <h3>iPhone 14 Pro Max</h3>
+            <p class="price">GH₵ 4,500</p>
+            <button onclick="addToCart('iPhone 14 Pro Max', 4500)">
+                Add to Cart
+            </button>
+        </div>
+
+        <div class="card">
+            <img src="phone 13pm.jpg" alt="iPhone 13 Pro Max">
+            <h3>iPhone 13 Pro Max</h3>
+            <p class="price">GH₵ 3,200</p>
+            <button onclick="addToCart('iPhone 13 Pro Max', 3200)">
+                Add to Cart
+            </button>
+        </div>
+
+        <div class="card">
+            <img src="IPhone 15.jpg" alt="iPhone 15">
+            <h3>iPhone 15</h3>
+            <p class="price">GH₵ 5,400</p>
+            <button onclick="addToCart('iPhone 15', 5400)">
+                Add to Cart
+            </button>
+        </div>
+
+        <div class="card">
+            <img src="iphone 16.jpg" alt="iPhone 16">
+            <h3>iPhone 16</h3>
+            <p class="price">GH₵ 8,500</p>
+            <button onclick="addToCart('iPhone 16', 8500)">
+                Add to Cart
+            </button>
+        </div>
+
+    </div>
+
+    <!-- SHOPPING CART -->
+
+    <div class="cart">
+
+        <h2>My Shopping Cart</h2>
+
+        <p>Items in cart: <span id="cart">0</span></p>
+
+        <h3>Products selected:</h3>
+
+        <ul id="cartItems">
+            <li>Your cart is empty.</li>
+        </ul>
+
+        <h3>Total Price:</h3>
+
+        <p>GH₵ <span id="total">0</span></p>
+
+        <button onclick="clearCart()">Clear Cart</button>
+
+    </div>
+
+    <!-- CUSTOMER CHECKOUT -->
+
+    <div class="cart">
+
+        <h2>Customer Checkout</h2>
+
+        <form id="checkoutForm" onsubmit="placeOrder(event)">
+
+            <label>Full Name</label>
+            <input
+                type="text"
+                id="customerName"
+                placeholder="Enter your full name"
+                required
+            >
+
+            <label>Phone Number</label>
+            <input
+                type="tel"
+                id="customerPhone"
+                placeholder="Enter your phone number"
+                required
+            >
+
+            <label>Delivery Location</label>
+            <input
+                type="text"
+                id="customerLocation"
+                placeholder="Enter your location"
+                required
+            >
+
+            <button type="submit">Place My Order on WhatsApp</button>
+
+        </form>
+
+    </div>
+
+    <footer>
+        <h3>TOO MUCH PHONES © 2026</h3>
+        <p>Thank you for shopping with us!</p>
+    </footer>
+
+    <script>
+
+       let selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
+
+let cartCount = 0;
+let totalPrice = 0;
+        // ADD PRODUCTS TO CART
+function loadCart() {
+
+    cartCount = selectedProducts.length;
+    totalPrice = 0;
+
+    let productList = "";
+
+    selectedProducts.forEach(function(product) {
+
+        totalPrice = totalPrice + product.price;
+
+        productList += "<li>" + product.name +
+        " - GH₵ " + product.price.toLocaleString() + "</li>";
+
+    });
+
+    document.getElementById("cart").textContent = cartCount;
+
+    document.getElementById("total").textContent =
+    totalPrice.toLocaleString();
+
+    document.getElementById("cartItems").innerHTML =
+    productList || "<li>Your cart is empty.</li>";
+}
+        function addToCart(name, price) {
+
+           cartCount = selectedProducts.length;
+
+totalPrice = 0;
+
+selectedProducts.forEach(function(product) {
+    totalPrice = totalPrice + product.price;
+});
+            selectedProducts.push({
+    name: name,
+    price: price
+});
+
+localStorage.setItem("selectedProducts", JSON.stringify(selectedProducts));
+
+            document.getElementById("cart").textContent = cartCount;
+
+            document.getElementById("total").textContent =
+                totalPrice.toLocaleString();
+
+            let productList = "";
+
+            selectedProducts.forEach(function(product) {
+                productList += "<li>" + product + "</li>";
+            });
+
+            document.getElementById("cartItems").innerHTML = productList;
+        }
+
+        // CLEAR SHOPPING CART
+
+        function clearCart() {
+
+            cartCount = 0;
+            totalPrice = 0;
+            selectedProducts = [];
+
+            document.getElementById("cart").textContent = 0;
+
+            document.getElementById("total").textContent = 0;
+
+            document.getElementById("cartItems").innerHTML =
+                "<li>Your cart is empty.</li>";
+        }
+
+        // SEND CUSTOMER ORDER TO WHATSAPP
+
+        function placeOrder(event) {
+
+            event.preventDefault();
+
+            if (cartCount === 0) {
+                alert("Please add a phone to your cart first!");
+                return;
+            }
+
+            let name = document.getElementById("customerName").value;
+
+            let phone = document.getElementById("customerPhone").value;
+
+            let location = document.getElementById("customerLocation").value;
+
+            let message =
+                "NEW PHONE ORDER\n\n" +
+                "Customer: " + name + "\n" +
+                "Phone: " + phone + "\n" +
+                "Location: " + location + "\n" +
+                "Products: " + selectedProducts.join(", ") + "\n" +
+                "Total: GH₵ " + totalPrice.toLocaleString();
+
+            // REPLACE THIS WITH YOUR SHOP'S WHATSAPP NUMBER
+
+            let shopNumber = "233534844321";
+
+            let whatsappLink =
+                "https://wa.me/" + shopNumber +
+                "?text=" + encodeURIComponent(message);
+
+            window.open(whatsappLink, "_blank");
+        }
+        
+loadCart();
+
+    </script>
+
+</body>
+</html>
